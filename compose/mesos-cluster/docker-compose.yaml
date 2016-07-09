@@ -1,0 +1,66 @@
+version: "2"
+services:
+ zookeeper:
+  image: garland/zookeeper
+  ports:
+   - "2181:2181"
+   - "2888:2888"
+   - "3888:3888"
+ mesos-master:
+  image: garland/mesosphere-docker-mesos-master
+  ports:
+   - "5050:5050"
+  network_mode: "host"
+  environment:
+   - MESOS_HOSTNAME=192.168.99.100 
+   - MESOS_IP=192.168.99.100 
+   - MESOS_ZK=zk://192.168.99.100:2181/mesos
+   - MESOS_PORT=5050
+   - MESOS_LOG_DIR=/var/log/mesos
+   - MESOS_QUORUM=1
+   - MESOS_REGISTRY=in_memory
+   - MESOS_WORK_DIR=/var/lib/mesos
+  depends_on:
+   - zookeeper
+ marathon:
+  image: garland/mesosphere-docker-marathon
+  ports:
+   - "8080:8080"
+  entrypoint:
+   - /opt/marathon/bin/start
+   - --master
+   - zk://192.168.99.100:2181/mesos
+   - --zk
+   - zk://192.168.99.100:2181/marathon
+  depends_on:
+   - mesos-master
+ mesos-slave-1:
+  image: garland/mesosphere-docker-mesos-master:latest
+  entrypoint: "mesos-slave"
+  environment:
+   - MESOS_MASTER=zk://192.168.99.100:2181/mesos
+   - MESOS_LOG_DIR=/var/log/mesos
+   - MESOS_LOGGING_LEVEL=INFO
+  depends_on:
+   - mesos-master
+ mesos-slave-2:
+  image: garland/mesosphere-docker-mesos-master:latest
+  entrypoint: "mesos-slave"
+  environment:
+   - MESOS_MASTER=zk://192.168.99.100:2181/mesos
+   - MESOS_LOG_DIR=/var/log/mesos
+   - MESOS_LOGGING_LEVEL=INFO
+  depends_on:
+   - mesos-master
+ mesos-slave-3:
+  image: garland/mesosphere-docker-mesos-master:latest
+  entrypoint: "mesos-slave"
+  environment:
+   - MESOS_MASTER=zk://192.168.99.100:2181/mesos
+   - MESOS_LOG_DIR=/var/log/mesos
+   - MESOS_LOGGING_LEVEL=INFO
+  depends_on:
+   - mesos-master
+
+
+

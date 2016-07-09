@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+	<groupId>framex</groupId>
+  <artifactId>snapshot-parent</artifactId>
+  <version>1.0</version>
+  </parent>
+
+  <groupId>docker.example</groupId>
+  <artifactId>docker-partition</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>docker-partition</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+<repositories>
+	<repository>
+		<id>snapshots</id>
+		<url>http://192.168.99.100:8081/content/repositories/snapshots/</url>
+	</repository>
+	<repository>
+		<id>releases</id>
+		<url>http://192.168.99.100:8081/content/repositories/releases/</url>
+	</repository>
+</repositories>
+ 
+
+<build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.10</version>
+        
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>docker.example</groupId>
+				  <artifactId>docker-hello</artifactId>
+				  <type>war</type>
+				  <version>0.0.1-SNAPSHOT</version>
+                  
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${CATALINA_HOME}/webapps/</outputDirectory>
+                  
+                </artifactItem>
+              </artifactItems>
+              <!-- other configurations here -->
+			  <stripVersion>true</stripVersion>
+            </configuration>
+         
+      </plugin>
+    </plugins>
+  </build>
+
+
+</project>
